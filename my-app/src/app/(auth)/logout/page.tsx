@@ -1,18 +1,38 @@
 'use client';
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
-    alert(`Registering with: ${email}`);
-    // TODO: Call your register API here
+  const handleRegister = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: email,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Đăng ký thành công!");
+        // chuyển hướng sang trang login nếu muốn
+      } else {
+        alert(data.detail || "Đăng ký thất bại");
+      }
+    } catch (err) {
+      alert("Lỗi kết nối server");
+    }
   };
 
   return (
@@ -48,3 +68,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+
